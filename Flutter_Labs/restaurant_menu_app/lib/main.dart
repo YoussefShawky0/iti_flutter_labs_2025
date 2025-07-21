@@ -1,20 +1,30 @@
 import 'package:flutter/material.dart';
-
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:restaurant_menu_app/core/theme.dart';
+import 'package:restaurant_menu_app/screens/home.dart';
 void main() {
-  runApp(const MainApp());
+  runApp(const RestaurantMenuApp());
 }
 
-class MainApp extends StatelessWidget {
-  const MainApp({super.key});
+class RestaurantMenuApp extends StatelessWidget {
+  const RestaurantMenuApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: Scaffold(
-        body: Center(
-          child: Text('Hello World!'),
-        ),
-      ),
+    return  ScreenUtilInit(
+      designSize: const Size(375, 812),
+      minTextAdapt: true,
+      splitScreenMode: true,
+      builder: (context, child) {
+        return MaterialApp(
+          debugShowCheckedModeBanner: false,
+          theme: AppTheme.lightTheme,
+          darkTheme: AppTheme.darkTheme,
+          themeMode: ThemeMode.system,
+          home: child,
+        );
+      },
+      child: const HomeScreen(),
     );
   }
 }
