@@ -120,7 +120,7 @@ List<MenuItemModel> menuItems = [
     name: 'Quesadilla',
     description: 'Grilled tortilla with cheese, chicken, and peppers.',
     price: 6.99,
-    image: 'assets/images/quesadilla.jpg',
+    image: 'assets/images/quesadillas.jpg',
     category: 'Mexican',
   ),
 ];
