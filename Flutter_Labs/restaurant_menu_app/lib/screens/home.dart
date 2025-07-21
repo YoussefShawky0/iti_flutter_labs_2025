@@ -12,16 +12,19 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  String selectedCategory = "Main";
+  String selectedCategory = "All";
 
   @override
   Widget build(BuildContext context) {
-    final filteredItems = menuItems
-        .where(
-          (item) =>
-              item.category.toLowerCase() == selectedCategory.toLowerCase(),
-        )
-        .toList();
+    final filteredItems = selectedCategory == "All"
+        ? menuItems
+        : menuItems
+              .where(
+                (item) =>
+                    item.category.toLowerCase() ==
+                    selectedCategory.toLowerCase(),
+              )
+              .toList();
 
     return Scaffold(
       appBar: AppBar(title: const Text("RESTAURANT MENU")),
@@ -40,8 +43,8 @@ class _HomeScreenState extends State<HomeScreen> {
               itemCount: filteredItems.length,
               physics: const BouncingScrollPhysics(),
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 1.sw > 600 ? 2 : 1,
-                childAspectRatio: 3,
+                crossAxisCount: _getCrossAxisCount(context),
+                childAspectRatio: _getChildAspectRatio(context),
                 crossAxisSpacing: 12.w,
                 mainAxisSpacing: 12.h,
               ),
@@ -53,5 +56,19 @@ class _HomeScreenState extends State<HomeScreen> {
         ],
       ),
     );
+  }
+
+  int _getCrossAxisCount(BuildContext context) {
+    final width = MediaQuery.of(context).size.width;
+    if (width > 1200) return 3;
+    if (width > 800) return 2;
+    return 1;
+  }
+
+  double _getChildAspectRatio(BuildContext context) {
+    final width = MediaQuery.of(context).size.width;
+    if (width > 1200) return 2.5;
+    if (width > 800) return 2.8;
+    return 3.2;
   }
 }

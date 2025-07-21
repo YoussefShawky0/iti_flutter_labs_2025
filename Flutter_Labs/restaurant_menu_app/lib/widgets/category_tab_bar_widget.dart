@@ -18,16 +18,17 @@ class CategoryTabBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final categories = CategoryModel.fromMenuItems(allMenuItems);
+    final allCategories = ['All', ...categories];
 
     return SizedBox(
       height: 50.h,
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
         padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
-        itemCount: categories.length,
+        itemCount: allCategories.length,
         separatorBuilder: (_, __) => SizedBox(width: 12.w),
         itemBuilder: (context, index) {
-          final category = categories[index];
+          final category = allCategories[index];
           final isSelected = selected == category;
 
           return GestureDetector(
@@ -46,6 +47,9 @@ class CategoryTabBar extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 14.sp,
                     color: isSelected ? Colors.white : Colors.black,
+                    fontWeight: isSelected
+                        ? FontWeight.bold
+                        : FontWeight.normal,
                   ),
                 ),
               ),
