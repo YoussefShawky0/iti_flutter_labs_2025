@@ -95,26 +95,36 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   int _getCrossAxisCount(double width) {
-    if (width >= 1200) return 3;
-    if (width >= 800) return 2;
-    return 1;
+    if (width >= 1200) return 4; // Desktop: 4 columns
+    if (width >= 1000) return 3; // iPad Pro: 3 columns
+    if (width >= 768) return 2; // Medium tablet: 2 columns
+    if (width >= 600) return 2; // Small tablet/iPad: 2 columns
+    return 1; // Phone: 1 column
   }
 
   double _getChildAspectRatio(double width) {
-    if (width >= 1200) return 3.5;
-    if (width >= 800) return 3.2;
-    return 3.8;
+    if (width >= 1200) return 3.5; // Desktop - Increased for larger cards
+    if (width >= 1000)
+      return 3.0; // iPad Pro - Much bigger for very large cards
+    if (width >= 768) return 2.8; // Medium tablet - Larger for big cards
+    if (width >= 600)
+      return 2.5; // Small tablet/iPad - Increased for larger cards
+    return 2.2; // Phone
   }
 
   double _getSpacing(double width) {
-    if (width >= 1200) return 20.w;
-    if (width >= 800) return 16.w;
-    return 12.w;
+    if (width >= 1200) return 24.w; // Desktop
+    if (width >= 1000) return 20.w; // iPad Pro
+    if (width >= 768) return 14.w; // Medium tablet - Reduced spacing
+    if (width >= 600) return 16.w; // Small tablet/iPad
+    return 12.w; // Phone
   }
 
   double _getHorizontalPadding(double width) {
-    if (width >= 1200) return 24.w;
-    if (width >= 800) return 20.w;
-    return 12.w;
+    if (width >= 1200) return 32.w; // Desktop
+    if (width >= 1000) return 24.w; // iPad Pro
+    if (width >= 768) return 18.w; // Medium tablet - Reduced padding
+    if (width >= 600) return 20.w; // Small tablet/iPad
+    return 16.w; // Phone
   }
 }

@@ -22,7 +22,7 @@ class CategoryTabBar extends StatelessWidget {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Container(
-      height: 60.h,
+      height: _getTabBarHeight(context),
       decoration: BoxDecoration(
         color: Theme.of(context).scaffoldBackgroundColor,
         boxShadow: [
@@ -35,9 +35,12 @@ class CategoryTabBar extends StatelessWidget {
       ),
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
-        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
+        padding: EdgeInsets.symmetric(
+          horizontal: _getHorizontalPadding(context),
+          vertical: _getVerticalPadding(context),
+        ),
         itemCount: allCategories.length,
-        separatorBuilder: (_, __) => SizedBox(width: 12.w),
+        separatorBuilder: (_, __) => SizedBox(width: _getItemSpacing(context)),
         itemBuilder: (context, index) {
           final category = allCategories[index];
           final isSelected = selected == category;
@@ -46,7 +49,10 @@ class CategoryTabBar extends StatelessWidget {
             onTap: () => onCategorySelected(category),
             child: AnimatedContainer(
               duration: const Duration(milliseconds: 200),
-              padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
+              padding: EdgeInsets.symmetric(
+                horizontal: _getButtonHorizontalPadding(context),
+                vertical: _getButtonVerticalPadding(context),
+              ),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(25.r),
                 color: isSelected
@@ -68,7 +74,7 @@ class CategoryTabBar extends StatelessWidget {
                 child: Text(
                   category,
                   style: TextStyle(
-                    fontSize: 15.sp,
+                    fontSize: _getFontSize(context),
                     color: isSelected
                         ? Colors.white
                         : (isDark ? Colors.white70 : Colors.black87),
@@ -81,5 +87,62 @@ class CategoryTabBar extends StatelessWidget {
         },
       ),
     );
+  }
+
+  // Responsive helper methods for tablet/iPad support
+  double _getTabBarHeight(BuildContext context) {
+    final width = MediaQuery.of(context).size.width;
+    if (width >= 1200) return 75.h; // Desktop
+    if (width >= 1000) return 70.h; // iPad Pro - Increased
+    if (width >= 600) return 65.h; // Small tablet/iPad - Increased
+    return 55.h; // Phone
+  }
+
+  double _getHorizontalPadding(BuildContext context) {
+    final width = MediaQuery.of(context).size.width;
+    if (width >= 1200) return 24.w; // Desktop
+    if (width >= 1000) return 20.w; // iPad Pro
+    if (width >= 600) return 18.w; // Small tablet/iPad
+    return 16.w; // Phone
+  }
+
+  double _getVerticalPadding(BuildContext context) {
+    final width = MediaQuery.of(context).size.width;
+    if (width >= 1200) return 12.h; // Desktop
+    if (width >= 1000) return 11.h; // iPad Pro
+    if (width >= 600) return 10.h; // Small tablet/iPad
+    return 8.h; // Phone
+  }
+
+  double _getItemSpacing(BuildContext context) {
+    final width = MediaQuery.of(context).size.width;
+    if (width >= 1200) return 16.w; // Desktop
+    if (width >= 1000) return 14.w; // iPad Pro
+    if (width >= 600) return 12.w; // Small tablet/iPad
+    return 10.w; // Phone
+  }
+
+  double _getButtonHorizontalPadding(BuildContext context) {
+    final width = MediaQuery.of(context).size.width;
+    if (width >= 1200) return 28.w; // Desktop
+    if (width >= 1000) return 26.w; // iPad Pro - Increased
+    if (width >= 600) return 24.w; // Small tablet/iPad - Increased
+    return 20.w; // Phone
+  }
+
+  double _getButtonVerticalPadding(BuildContext context) {
+    final width = MediaQuery.of(context).size.width;
+    if (width >= 1200) return 14.h; // Desktop
+    if (width >= 1000) return 13.h; // iPad Pro - Increased
+    if (width >= 600) return 12.h; // Small tablet/iPad - Increased
+    return 10.h; // Phone
+  }
+
+  double _getFontSize(BuildContext context) {
+    final width = MediaQuery.of(context).size.width;
+    if (width >= 1200) return 19.sp; // Desktop
+    if (width >= 1000) return 18.sp; // iPad Pro - Increased
+    if (width >= 600) return 17.sp; // Small tablet/iPad - Increased
+    return 15.sp; // Phone
   }
 }

@@ -1,6 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+// Helper function for responsive app bar title size
+double _getAppBarTitleSize() {
+  // We can't access MediaQuery here, so we'll use ScreenUtil's responsive sizing
+  // This will automatically scale based on screen size
+  return 22.sp; // ScreenUtil will handle the responsive scaling
+}
+
 class AppTheme {
   static final lightTheme = ThemeData(
     brightness: Brightness.light,
@@ -15,7 +22,7 @@ class AppTheme {
       elevation: 0,
       centerTitle: true,
       titleTextStyle: TextStyle(
-        fontSize: 22.sp,
+        fontSize: _getAppBarTitleSize(),
         fontWeight: FontWeight.bold,
         color: Colors.black87,
       ),
@@ -49,7 +56,7 @@ class AppTheme {
       elevation: 0,
       centerTitle: true,
       titleTextStyle: TextStyle(
-        fontSize: 22.sp,
+        fontSize: _getAppBarTitleSize(),
         fontWeight: FontWeight.bold,
         color: Colors.white,
       ),
