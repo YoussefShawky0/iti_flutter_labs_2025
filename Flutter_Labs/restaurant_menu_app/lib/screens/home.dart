@@ -5,7 +5,14 @@ import 'package:restaurant_menu_app/widgets/category_tab_bar_widget.dart';
 import 'package:restaurant_menu_app/widgets/menu_card_widget.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+  final VoidCallback onThemeToggle;
+  final ThemeMode themeMode;
+
+  const HomeScreen({
+    super.key,
+    required this.onThemeToggle,
+    required this.themeMode,
+  });
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -27,7 +34,24 @@ class _HomeScreenState extends State<HomeScreen> {
               .toList();
 
     return Scaffold(
-      appBar: AppBar(title: const Text("RESTAURANT MENU")),
+      appBar: AppBar(
+        title: const Text("RESTAURANT MENU"),
+        actions: [
+          Padding(
+            padding: EdgeInsets.only(right: 16.w),
+            child: IconButton(
+              icon: Icon(
+                widget.themeMode == ThemeMode.dark
+                    ? Icons.light_mode
+                    : Icons.dark_mode,
+                color: Theme.of(context).appBarTheme.foregroundColor,
+              ),
+              onPressed: widget.onThemeToggle,
+              tooltip: 'Toggle Theme',
+            ),
+          ),
+        ],
+      ),
       body: Column(
         children: [
           CategoryTabBar(
@@ -38,18 +62,30 @@ class _HomeScreenState extends State<HomeScreen> {
             allMenuItems: menuItems,
           ),
           Expanded(
-            child: GridView.builder(
-              padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 12.h),
-              itemCount: filteredItems.length,
-              physics: const BouncingScrollPhysics(),
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: _getCrossAxisCount(context),
-                childAspectRatio: _getChildAspectRatio(context),
-                crossAxisSpacing: 12.w,
-                mainAxisSpacing: 12.h,
-              ),
-              itemBuilder: (context, index) {
-                return MenuCard(item: filteredItems[index]);
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                return GridView.builder(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: _getHorizontalPadding(constraints.maxWidth),
+                    vertical: 12.h,
+                  ),
+                  itemCount: filteredItems.length,
+                  physics: const BouncingScrollPhysics(),
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: _getCrossAxisCount(constraints.maxWidth),
+                    childAspectRatio: _getChildAspectRatio(
+                      constraints.maxWidth,
+                    ),
+                    crossAxisSpacing: _getSpacing(constraints.maxWidth),
+                    mainAxisSpacing: 12.h,
+                  ),
+                  itemBuilder: (context, index) {
+                    return MenuCard(
+                      item: filteredItems[index],
+                      screenWidth: constraints.maxWidth,
+                    );
+                  },
+                );
               },
             ),
           ),
@@ -58,17 +94,27 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  int _getCrossAxisCount(BuildContext context) {
-    final width = MediaQuery.of(context).size.width;
-    if (width > 1200) return 3;
-    if (width > 800) return 2;
+  int _getCrossAxisCount(double width) {
+    if (width >= 1200) return 3;
+    if (width >= 800) return 2;
     return 1;
   }
 
-  double _getChildAspectRatio(BuildContext context) {
-    final width = MediaQuery.of(context).size.width;
-    if (width > 1200) return 2.5;
-    if (width > 800) return 2.8;
-    return 3.2;
+  double _getChildAspectRatio(double width) {
+    if (width >= 1200) return 3.5;
+    if (width >= 800) return 3.2;
+    return 3.8;
+  }
+
+  double _getSpacing(double width) {
+    if (width >= 1200) return 20.w;
+    if (width >= 800) return 16.w;
+    return 12.w;
+  }
+
+  double _getHorizontalPadding(double width) {
+    if (width >= 1200) return 24.w;
+    if (width >= 800) return 20.w;
+    return 12.w;
   }
 }

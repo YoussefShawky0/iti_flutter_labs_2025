@@ -19,12 +19,23 @@ class CategoryTabBar extends StatelessWidget {
   Widget build(BuildContext context) {
     final categories = CategoryModel.fromMenuItems(allMenuItems);
     final allCategories = ['All', ...categories];
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
-    return SizedBox(
-      height: 50.h,
+    return Container(
+      height: 60.h,
+      decoration: BoxDecoration(
+        color: Theme.of(context).scaffoldBackgroundColor,
+        boxShadow: [
+          BoxShadow(
+            color: isDark ? Colors.black26 : Colors.grey.withOpacity(0.1),
+            offset: const Offset(0, 2),
+            blurRadius: 4,
+          ),
+        ],
+      ),
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
-        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
+        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
         itemCount: allCategories.length,
         separatorBuilder: (_, __) => SizedBox(width: 12.w),
         itemBuilder: (context, index) {
@@ -33,23 +44,35 @@ class CategoryTabBar extends StatelessWidget {
 
           return GestureDetector(
             onTap: () => onCategorySelected(category),
-            child: Container(
-              padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 200),
+              padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(20.r),
+                borderRadius: BorderRadius.circular(25.r),
                 color: isSelected
                     ? Theme.of(context).colorScheme.primary
-                    : Colors.grey[300],
+                    : (isDark ? Colors.grey[800] : Colors.grey[200]),
+                boxShadow: isSelected
+                    ? [
+                        BoxShadow(
+                          color: Theme.of(
+                            context,
+                          ).colorScheme.primary.withOpacity(0.3),
+                          offset: const Offset(0, 2),
+                          blurRadius: 8,
+                        ),
+                      ]
+                    : null,
               ),
               child: Center(
                 child: Text(
                   category,
                   style: TextStyle(
-                    fontSize: 14.sp,
-                    color: isSelected ? Colors.white : Colors.black,
-                    fontWeight: isSelected
-                        ? FontWeight.bold
-                        : FontWeight.normal,
+                    fontSize: 15.sp,
+                    color: isSelected
+                        ? Colors.white
+                        : (isDark ? Colors.white70 : Colors.black87),
+                    fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
                   ),
                 ),
               ),
