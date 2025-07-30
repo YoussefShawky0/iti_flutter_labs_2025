@@ -1,22 +1,31 @@
 import 'package:dio/dio.dart';
 
 import '../models/article_model.dart';
+import '../utils/app_config.dart';
 
 class NewsService {
-  static const String _baseUrl = 'https://newsapi.org/v2';
-  static const String _apiKey = 'da7a41664d354f01a3576def8b9c11a2';
-
   final Dio _dio = Dio();
 
   NewsService() {
-    _dio.options.headers = {'X-API-Key': _apiKey};
+    // Validate API configuration
+    AppConfig.validateConfiguration();
+
+    _dio.options.headers = {'X-API-Key': AppConfig.newsApiKey};
+
+    // Set request timeouts
+    _dio.options.connectTimeout = Duration(
+      seconds: AppConfig.requestTimeoutSeconds,
+    );
+    _dio.options.receiveTimeout = Duration(
+      seconds: AppConfig.requestTimeoutSeconds,
+    );
   }
 
   // Get headlines by country - Latest news
   Future<List<Article>> getTopHeadlines({String country = 'us'}) async {
     try {
       final response = await _dio.get(
-        '$_baseUrl/top-headlines',
+        '${AppConfig.newsApiBaseUrl}/top-headlines',
         queryParameters: {'country': country},
       );
 
@@ -38,7 +47,7 @@ class NewsService {
   }) async {
     try {
       final response = await _dio.get(
-        '$_baseUrl/top-headlines',
+        '${AppConfig.newsApiBaseUrl}/top-headlines',
         queryParameters: {'country': country, 'category': category},
       );
 
@@ -61,7 +70,7 @@ class NewsService {
   }) async {
     try {
       final response = await _dio.get(
-        '$_baseUrl/everything',
+        '${AppConfig.newsApiBaseUrl}/everything',
         queryParameters: {
           'q': query,
           'page': page,
@@ -84,7 +93,7 @@ class NewsService {
   // Get news sources - Available news sources
   Future<List<Map<String, dynamic>>> getNewsSources() async {
     try {
-      final response = await _dio.get('$_baseUrl/sources');
+      final response = await _dio.get('${AppConfig.newsApiBaseUrl}/sources');
 
       if (response.statusCode == 200) {
         final List<dynamic> sources = response.data['sources'];
@@ -111,12 +120,12 @@ class NewsService {
 
       if (query != null && query.isNotEmpty) {
         // Search query
-        endpoint = '$_baseUrl/everything';
+        endpoint = '${AppConfig.newsApiBaseUrl}/everything';
         queryParams['q'] = query;
         queryParams['sortBy'] = 'publishedAt';
       } else {
         // Top headlines with optional category
-        endpoint = '$_baseUrl/top-headlines';
+        endpoint = '${AppConfig.newsApiBaseUrl}/top-headlines';
         queryParams['country'] = 'us';
         if (category != null && category.isNotEmpty) {
           queryParams['category'] = category;
@@ -148,6 +157,4 @@ class NewsService {
     _dio.options.connectTimeout = Duration(seconds: timeoutInSeconds);
     _dio.options.receiveTimeout = Duration(seconds: timeoutInSeconds);
   }
-
-  // Handle API error codes
 }

@@ -14,6 +14,7 @@ import '../widgets/category_chip.dart';
 import '../widgets/custom_app_bar.dart';
 import '../widgets/empty_state_widget.dart';
 import '../widgets/error_state_widget.dart';
+import 'article_detail_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -338,176 +339,10 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _showArticleDetails(Article article) {
-    // Show article details in bottom sheet or navigate to details page
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (context) => DraggableScrollableSheet(
-        initialChildSize: 0.9,
-        minChildSize: 0.5,
-        maxChildSize: 0.9,
-        builder: (context, scrollController) => Container(
-          decoration: const BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-          ),
-          child: Column(
-            children: [
-              // Handle bar
-              Container(
-                width: 40,
-                height: 4,
-                margin: const EdgeInsets.symmetric(vertical: 12),
-                decoration: BoxDecoration(
-                  color: Colors.grey.shade300,
-                  borderRadius: BorderRadius.circular(2),
-                ),
-              ),
-              Expanded(
-                child: SingleChildScrollView(
-                  controller: scrollController,
-                  padding: const EdgeInsets.all(16),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // Article image
-                      if (article.imageUrl.isNotEmpty)
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(12),
-                          child: Image.network(
-                            article.imageUrl,
-                            width: double.infinity,
-                            height: 200,
-                            fit: BoxFit.cover,
-                            errorBuilder: (context, error, stackTrace) =>
-                                const SizedBox.shrink(),
-                          ),
-                        ),
-
-                      const SizedBox(height: 16),
-
-                      // Article title
-                      Text(
-                        article.title,
-                        style: const TextStyle(
-                          fontSize: 22,
-                          fontWeight: FontWeight.bold,
-                          color: AppColors.text,
-                        ),
-                      ),
-
-                      const SizedBox(height: 12),
-
-                      // Article meta info
-                      Row(
-                        children: [
-                          Text(
-                            article.source,
-                            style: TextStyle(
-                              color: AppColors.primary,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                          const SizedBox(width: 8),
-                          Text(
-                            '•',
-                            style: TextStyle(color: AppColors.textSecondary),
-                          ),
-                          const SizedBox(width: 8),
-                          Text(
-                            _formatDate(article.publishedAt),
-                            style: TextStyle(color: AppColors.textSecondary),
-                          ),
-                        ],
-                      ),
-
-                      const SizedBox(height: 16),
-
-                      // Article content
-                      Text(
-                        article.description,
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: AppColors.text,
-                          height: 1.5,
-                        ),
-                      ),
-
-                      if (article.content.isNotEmpty) ...[
-                        const SizedBox(height: 16),
-                        Text(
-                          article.content,
-                          style: TextStyle(
-                            fontSize: 16,
-                            color: AppColors.text,
-                            height: 1.5,
-                          ),
-                        ),
-                      ],
-
-                      const SizedBox(height: 24),
-
-                      // Action buttons
-                      Row(
-                        children: [
-                          Expanded(
-                            child: ElevatedButton.icon(
-                              onPressed: () {
-                                // Open full article in browser
-                              },
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: AppColors.primary,
-                                foregroundColor: Colors.white,
-                              ),
-                              icon: const Icon(Icons.open_in_new),
-                              label: const Text('Read Full Article'),
-                            ),
-                          ),
-                          const SizedBox(width: 12),
-                          ElevatedButton(
-                            onPressed: () {
-                              context.read<NewsCubit>().toggleBookmark(article);
-                            },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: article.isBookmarked
-                                  ? AppColors.primary
-                                  : Colors.grey.shade200,
-                              foregroundColor: article.isBookmarked
-                                  ? Colors.white
-                                  : AppColors.text,
-                            ),
-                            child: Icon(
-                              article.isBookmarked
-                                  ? Icons.bookmark
-                                  : Icons.bookmark_border,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => ArticleDetailScreen(article: article),
       ),
     );
-  }
-
-  String _formatDate(DateTime date) {
-    final now = DateTime.now();
-    final difference = now.difference(date);
-
-    if (difference.inDays > 0) {
-      return '${difference.inDays}d ago';
-    } else if (difference.inHours > 0) {
-      return '${difference.inHours}h ago';
-    } else if (difference.inMinutes > 0) {
-      return '${difference.inMinutes}m ago';
-    } else {
-      return 'Just now';
-    }
   }
 }
