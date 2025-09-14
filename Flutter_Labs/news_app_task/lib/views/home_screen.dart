@@ -14,6 +14,7 @@ import '../widgets/category_chip.dart';
 import '../widgets/custom_app_bar.dart';
 import '../widgets/empty_state_widget.dart';
 import '../widgets/error_state_widget.dart';
+import '../widgets/search_test_widget.dart';
 import 'article_detail_screen.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -60,8 +61,12 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _onSearchSubmitted(String query) {
+    print('🔍 HomeScreen: Search submitted with query: "$query"');
     if (query.trim().isNotEmpty) {
+      print('✅ Query is valid, calling NewsCubit.searchNews()');
       context.read<NewsCubit>().searchNews(query.trim());
+    } else {
+      print('⚠️ Query is empty, ignoring search');
     }
   }
 
@@ -283,10 +288,30 @@ class _HomeScreenState extends State<HomeScreen> {
 
           // Floating action button for search
           floatingActionButton: !_isSearchVisible
-              ? FloatingActionButton(
-                  onPressed: _toggleSearch,
-                  backgroundColor: AppColors.primary,
-                  child: const Icon(Icons.search, color: Colors.white),
+              ? Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    FloatingActionButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const SearchTestWidget(),
+                          ),
+                        );
+                      },
+                      backgroundColor: Colors.orange,
+                      heroTag: "test",
+                      child: const Icon(Icons.bug_report, color: Colors.white),
+                    ),
+                    const SizedBox(width: 10),
+                    FloatingActionButton(
+                      onPressed: _toggleSearch,
+                      backgroundColor: AppColors.primary,
+                      heroTag: "search",
+                      child: const Icon(Icons.search, color: Colors.white),
+                    ),
+                  ],
                 )
               : null,
         ),

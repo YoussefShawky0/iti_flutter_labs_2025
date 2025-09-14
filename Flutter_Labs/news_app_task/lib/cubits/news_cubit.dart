@@ -126,7 +126,10 @@ class NewsCubit extends Cubit<NewsState> {
 
   // Background cache updates
   Future<void> searchNews(String query) async {
+    print('🔍 NewsCubit: Starting search for "$query"');
+
     if (query.trim().isEmpty) {
+      print('⚠️ Empty query, fetching headlines instead');
       await fetchTopHeadlines();
       return;
     }
@@ -138,7 +141,10 @@ class NewsCubit extends Cubit<NewsState> {
       _currentPage = 1;
       _selectedCategoryId = 'general';
 
+      print('📡 Calling repository searchNews...');
       final articles = await _newsRepository.searchNews(query: query);
+
+      print('✅ Search completed, found ${articles.length} articles');
 
       if (articles.isEmpty) {
         emit(const NewsEmpty(message: 'No articles found for your search'));
@@ -148,6 +154,7 @@ class NewsCubit extends Cubit<NewsState> {
         emit(NewsLoaded(articles: articles, hasMore: _hasMore));
       }
     } catch (e) {
+      print('❌ Search failed: $e');
       emit(NewsError(message: 'Search failed: ${e.toString()}'));
     }
   }

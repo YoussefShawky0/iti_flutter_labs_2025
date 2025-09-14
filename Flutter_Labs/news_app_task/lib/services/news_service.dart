@@ -69,6 +69,10 @@ class NewsService {
     int pageSize = 20,
   }) async {
     try {
+      print('🔍 Searching for: $query');
+      print('🔗 URL: ${AppConfig.newsApiBaseUrl}/everything');
+      print('🔑 API Key: ${AppConfig.newsApiKey.substring(0, 8)}...');
+
       final response = await _dio.get(
         '${AppConfig.newsApiBaseUrl}/everything',
         queryParameters: {
@@ -79,13 +83,18 @@ class NewsService {
         },
       );
 
+      print('📡 Response status: ${response.statusCode}');
+
       if (response.statusCode == 200) {
         final List<dynamic> articles = response.data['articles'];
+        print('📰 Found ${articles.length} articles');
         return articles.map((json) => Article.fromJson(json)).toList();
       } else {
+        print('❌ Failed with status: ${response.statusCode}');
         throw Exception('Failed to search news');
       }
     } catch (e) {
+      print('💥 Search error: $e');
       throw Exception('Error searching news: $e');
     }
   }
